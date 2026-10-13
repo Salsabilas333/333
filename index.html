@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChemLearn XII – Kesetimbangan Kimia</title>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" class="login-screen active">
+  <!-- Animated background molecules -->
+  <div class="bg-molecules">
+    <div class="molecule m1">⚗️</div>
+    <div class="molecule m2">🧪</div>
+    <div class="molecule m3">⚛️</div>
+    <div class="molecule m4">🔬</div>
+    <div class="molecule m5">💊</div>
+    <div class="molecule m6">🧬</div>
+  </div>
+
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-icon"><i class="fas fa-flask"></i></div>
+      <h1>ChemLearn <span>XII</span></h1>
+      <p>Platform Pembelajaran Kimia Interaktif</p>
+      <div class="login-subtitle">Kesetimbangan Kimia · Kelas XI SMA</div>
+    </div>
+
+    <div class="role-selector">
+      <button class="role-btn active" data-role="student" onclick="selectRole('student')">
+        <i class="fas fa-user-graduate"></i>
+        <span>Siswa</span>
+      </button>
+      <button class="role-btn" data-role="teacher" onclick="selectRole('teacher')">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Guru / Admin</span>
+      </button>
+    </div>
+
+    <div class="login-form">
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Username</label>
+        <input type="text" id="loginUsername" placeholder="Masukkan username..." value="siswa1"/>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="loginPassword" placeholder="Masukkan password..." value="12345"/>
+      </div>
+      <button class="login-btn" onclick="doLogin()">
+        <i class="fas fa-sign-in-alt"></i> Masuk ke ChemLearn
+      </button>
+    </div>
+
+    <div class="login-demo-hint">
+      <i class="fas fa-info-circle"></i>
+      Demo: Username apapun · Password: 12345
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="mainApp" class="main-app hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="logo-icon"><i class="fas fa-flask"></i></div>
+        <div class="logo-text">
+          <span class="logo-title">ChemLearn</span>
+          <span class="logo-sub">Kimia XII</span>
+        </div>
+      </div>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle Sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- User Info -->
+    <div class="sidebar-user" id="sidebarUser">
+      <div class="user-avatar" id="userAvatar">S</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarUserName">Loading...</div>
+        <div class="user-role" id="sidebarUserRole">Siswa</div>
+      </div>
+    </div>
+
+    <!-- STUDENT NAV -->
+    <nav class="sidebar-nav" id="studentNav">
+      <div class="nav-section-title">MENU UTAMA</div>
+      <ul>
+        <li><a href="#" class="nav-link active" onclick="showPage('dashboardSiswa')">
+          <i class="fas fa-home"></i><span>Dashboard</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('pusatBelajar')">
+          <i class="fas fa-book-open"></i><span>Pusat Belajar</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('mediaCenter')">
+          <i class="fas fa-play-circle"></i><span>Media Center</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('virtualLab')">
+          <i class="fas fa-flask"></i><span>Virtual Lab</span></a></li>
+      </ul>
+      <div class="nav-section-title">EVALUASI</div>
+      <ul>
+        <li><a href="#" class="nav-link" onclick="showPage('tugasLKPD')">
+          <i class="fas fa-tasks"></i><span>Tugas & LKPD</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('evaluasiKuis')">
+          <i class="fas fa-star"></i><span>Evaluasi Kuis</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('tanyaAI')">
+          <i class="fas fa-robot"></i><span>Tanya AI</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('presensiDigital')">
+          <i class="fas fa-calendar-check"></i><span>Presensi</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- TEACHER NAV -->
+    <nav class="sidebar-nav hidden" id="teacherNav">
+      <div class="nav-section-title">MENU GURU</div>
+      <ul>
+        <li><a href="#" class="nav-link active" onclick="showPage('dashboardGuru')">
+          <i class="fas fa-tachometer-alt"></i><span>Dashboard Guru</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('manajemenKonten')">
+          <i class="fas fa-edit"></i><span>Manajemen Konten</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('kunciJawaban')">
+          <i class="fas fa-key"></i><span>Kunci Jawaban</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('spreadsheetNilai')">
+          <i class="fas fa-table"></i><span>Spreadsheet Nilai</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('laporanPresensi')">
+          <i class="fas fa-clipboard-list"></i><span>Laporan Presensi</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('controlRoom')">
+          <i class="fas fa-sliders-h"></i><span>Control Room Lab</span></a></li>
+        <li><a href="#" class="nav-link" onclick="showPage('analisisAI')">
+          <i class="fas fa-brain"></i><span>Analisis Tanya AI</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="main-content" id="mainContent">
+    <!-- TOP HEADER BAR -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button class="topbar-toggle" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="top-bar-right">
+        <div class="topbar-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Cari materi..."/>
+        </div>
+        <div class="topbar-notif">
+          <i class="fas fa-bell"></i>
+          <span class="notif-badge">3</span>
+        </div>
+        <div class="topbar-user-mini" id="topbarUser">
+          <div class="mini-avatar" id="topbarAvatar">S</div>
+          <span id="topbarName">Siswa</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-wrapper" id="pageWrapper">
+
+      <!-- ===== SISWA: DASHBOARD ===== -->
+      <div class="page-content active" id="page-dashboardSiswa">
+        <div class="page-hero">
+          <div class="hero-text">
+            <div class="hero-greeting" id="heroGreeting">Selamat Pagi,</div>
+            <h2 class="hero-name" id="heroStudentName">Andi Pratama! 👋</h2>
+            <p>Hari ini kita lanjut belajar <strong>Kesetimbangan Kimia</strong> ya!</p>
+          </div>
+          <div class="hero-chem-icon">⚗️</div>
+        </div>
+
+        <!-- Progress Cards -->
+        <div class="stats-grid">
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">7/9</div>
+              <div class="stat-label">Materi Selesai</div>
+            </div>
+            <div class="stat-progress"><div class="stat-bar" style="width:78%"></div></div>
+          </div>
+          <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">85</div>
+              <div class="stat-label">Rata-rata Nilai</div>
+            </div>
+            <div class="stat-progress"><div class="stat-bar" style="width:85%"></div></div>
+          </div>
+          <div class="stat-card stat-orange">
+            <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">4/5</div>
+              <div class="stat-label">Tugas Dikumpul</div>
+            </div>
+            <div class="stat-progress"><div class="stat-bar" style="width:80%"></div></div>
+          </div>
+          <div class="stat-card stat-purple">
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">18/20</div>
+              <div class="stat-label">Kehadiran</div>
+            </div>
+            <div class="stat-progress"><div class="stat-bar" style="width:90%"></div></div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Motivational Card -->
+          <div class="motivasi-card">
+            <div class="motivasi-icon">🔬</div>
+            <div class="motivasi-text">
+              <h3>"Kimia bukan sekadar rumus, tapi cara membaca bahasa alam."</h3>
+              <p>Kamu sudah selesaikan <strong>78% materi</strong> minggu ini. Tetap semangat!</p>
+            </div>
+            <button class="motivasi-btn" onclick="showPage('pusatBelajar')">
+              <i class="fas fa-arrow-right"></i> Lanjut Belajar
+            </button>
+          </div>
+
+          <!-- Schedule -->
+          <div class="schedule-card">
+            <h3><i class="fas fa-calendar-alt"></i> Jadwal Belajar</h3>
+            <div class="schedule-list">
+              <div class="schedule-item done">
+                <div class="sched-time">08.00</div>
+                <div class="sched-info">
+                  <div class="sched-title">Materi: Tetapan Kc & Kp</div>
+                  <div class="sched-status"><i class="fas fa-check-circle"></i> Selesai</div>
+                </div>
+              </div>
+              <div class="schedule-item active">
+                <div class="sched-time">10.00</div>
+                <div class="sched-info">
+                  <div class="sched-title">Kuis: Asas Le Chatelier</div>
+                  <div class="sched-status active"><i class="fas fa-clock"></i> Sekarang</div>
+                </div>
+              </div>
+              <div class="schedule-item">
+                <div class="sched-time">13.00</div>
+                <div class="sched-info">
+                  <div class="sched-title">Virtual Lab: Pergeseran Kesetimbangan</div>
+                  <div class="sched-status"><i class="fas fa-hourglass"></i> Mendatang</div>
+                </div>
+              </div>
+              <div class="schedule-item">
+                <div class="sched-time">15.00</div>
+                <div class="sched-info">
+                  <div class="sched-title">LKPD: Analisis Kasus Industri</div>
+                  <div class="sched-status"><i class="fas fa-hourglass"></i> Mendatang</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="activity-card">
+            <h3><i class="fas fa-history"></i> Aktivitas Terbaru</h3>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="act-icon blue"><i class="fas fa-book"></i></div>
+                <div class="act-info">
+                  <div class="act-title">Selesai membaca: Asas Le Chatelier</div>
+                  <div class="act-time">2 jam lalu</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon green"><i class="fas fa-star"></i></div>
+                <div class="act-info">
+                  <div class="act-title">Kuis: Kc & Kp – Nilai 90</div>
+                  <div class="act-time">Kemarin</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon orange"><i class="fas fa-flask"></i></div>
+                <div class="act-info">
+                  <div class="act-title">Virtual Lab: Pengaruh Suhu</div>
+                  <div class="act-time">2 hari lalu</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon purple"><i class="fas fa-tasks"></i></div>
+                <div class="act-info">
+                  <div class="act-title">LKPD 2 dikumpulkan</div>
+                  <div class="act-time">3 hari lalu</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: PUSAT BELAJAR ===== -->
+      <div class="page-content hidden" id="page-pusatBelajar">
+        <div class="section-header">
+          <h2><i class="fas fa-book-open"></i> Pusat Belajar</h2>
+          <p>Materi Lengkap Kesetimbangan Kimia Kelas XII</p>
+        </div>
+
+        <div class="materi-tabs">
+          <button class="tab-btn active" onclick="switchMateriTab('modul')">📚 Modul Digital</button>
+          <button class="tab-btn" onclick="switchMateriTab('ringkasan')">📝 Ringkasan</button>
+        </div>
+
+        <div id="materiModul" class="materi-section active">
+          <div class="materi-grid">
+            <div class="materi-card" onclick="openMateri('pengertian')">
+              <div class="materi-num">01</div>
+              <div class="materi-icon">⚖️</div>
+              <div class="materi-info">
+                <h4>Pengertian Kesetimbangan Kimia</h4>
+                <p>Konsep dasar reaksi yang mencapai kesetimbangan</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~15 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('reversibel')">
+              <div class="materi-num">02</div>
+              <div class="materi-icon">🔄</div>
+              <div class="materi-info">
+                <h4>Reaksi Reversibel</h4>
+                <p>Reaksi yang dapat berjalan dua arah</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~10 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('dinamis')">
+              <div class="materi-num">03</div>
+              <div class="materi-icon">⚡</div>
+              <div class="materi-info">
+                <h4>Kesetimbangan Dinamis</h4>
+                <p>Laju reaksi maju = laju reaksi balik</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~12 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('kckp')">
+              <div class="materi-num">04</div>
+              <div class="materi-icon">🔢</div>
+              <div class="materi-info">
+                <h4>Tetapan Kesetimbangan (Kc & Kp)</h4>
+                <p>Menghitung Kc dan Kp dari persamaan reaksi</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~20 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('hubungankckp')">
+              <div class="materi-num">05</div>
+              <div class="materi-icon">🔗</div>
+              <div class="materi-info">
+                <h4>Hubungan Kc dan Kp</h4>
+                <p>Konversi antara tetapan Kc dan Kp</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~15 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('disosiasi')">
+              <div class="materi-num">06</div>
+              <div class="materi-icon">💫</div>
+              <div class="materi-info">
+                <h4>Derajat Disosiasi (α)</h4>
+                <p>Fraksi mol yang terurai dalam kesetimbangan</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~18 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('faktor')">
+              <div class="materi-num">07</div>
+              <div class="materi-icon">🌡️</div>
+              <div class="materi-info">
+                <h4>Faktor-faktor yang Mempengaruhi</h4>
+                <p>Suhu, konsentrasi, tekanan, dan volume</p>
+                <div class="materi-meta"><span class="tag done">✓ Selesai</span> <span>~25 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('lechatelier')">
+              <div class="materi-num">08</div>
+              <div class="materi-icon">📐</div>
+              <div class="materi-info">
+                <h4>Asas Le Chatelier</h4>
+                <p>Sistem merespons gangguan kesetimbangan</p>
+                <div class="materi-meta"><span class="tag current">📖 Sedang Dibaca</span> <span>~20 menit</span></div>
+              </div>
+            </div>
+            <div class="materi-card" onclick="openMateri('industri')">
+              <div class="materi-num">09</div>
+              <div class="materi-icon">🏭</div>
+              <div class="materi-info">
+                <h4>Penerapan dalam Industri</h4>
+                <p>Proses Haber-Bosch, Kontak, dan lainnya</p>
+                <div class="materi-meta"><span class="tag pending">⏳ Belum Dibaca</span> <span>~30 menit</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="materiRingkasan" class="materi-section hidden">
+          <div class="ringkasan-container">
+            <div class="ringkasan-card">
+              <h3>📌 Ringkasan Kesetimbangan Kimia</h3>
+              <div class="ringkasan-item">
+                <h4>1. Pengertian</h4>
+                <p>Kesetimbangan kimia terjadi ketika <strong>laju reaksi maju = laju reaksi balik</strong> dan konsentrasi zat tidak berubah lagi.</p>
+              </div>
+              <div class="ringkasan-item">
+                <h4>2. Tetapan Kesetimbangan</h4>
+                <div class="formula-box">
+                  <p>Untuk reaksi: aA + bB ⇌ cC + dD</p>
+                  <code>Kc = [C]ᶜ[D]ᵈ / [A]ᵃ[B]ᵇ</code>
+                  <code>Kp = (PC)ᶜ(PD)ᵈ / (PA)ᵃ(PB)ᵇ</code>
+                </div>
+              </div>
+              <div class="ringkasan-item">
+                <h4>3. Hubungan Kc dan Kp</h4>
+                <div class="formula-box">
+                  <code>Kp = Kc × (RT)^Δn</code>
+                  <p>Δn = jumlah mol produk gas – jumlah mol reaktan gas</p>
+                </div>
+              </div>
+              <div class="ringkasan-item">
+                <h4>4. Asas Le Chatelier</h4>
+                <div class="lechatelier-table">
+                  <table>
+                    <thead><tr><th>Gangguan</th><th>Pergeseran</th></tr></thead>
+                    <tbody>
+                      <tr><td>Konsentrasi reaktan ↑</td><td>→ Ke produk</td></tr>
+                      <tr><td>Konsentrasi produk ↑</td><td>→ Ke reaktan</td></tr>
+                      <tr><td>Suhu ↑ (reaksi endoterm)</td><td>→ Ke produk</td></tr>
+                      <tr><td>Suhu ↑ (reaksi eksoterm)</td><td>→ Ke reaktan</td></tr>
+                      <tr><td>Tekanan ↑ / Volume ↓</td><td>→ Ke sisi mol lebih sedikit</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="ringkasan-item">
+                <h4>5. Penerapan Industri</h4>
+                <p>🏭 <strong>Proses Haber-Bosch</strong>: N₂ + 3H₂ ⇌ 2NH₃ (suhu 400-500°C, tekanan 200 atm, katalis Fe)</p>
+                <p>🏭 <strong>Proses Kontak</strong>: 2SO₂ + O₂ ⇌ 2SO₃ (pembuatan H₂SO₄)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Materi -->
+        <div class="modal-overlay" id="materiModal">
+          <div class="modal-box">
+            <div class="modal-header">
+              <h3 id="modalTitle">Judul Materi</h3>
+              <button onclick="closeModal('materiModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: MEDIA CENTER ===== -->
+      <div class="page-content hidden" id="page-mediaCenter">
+        <div class="section-header">
+          <h2><i class="fas fa-play-circle"></i> Media Center</h2>
+          <p>Video Pembelajaran & Ilustrasi Reaksi Kimia</p>
+        </div>
+
+        <div class="media-grid">
+          <div class="video-card" onclick="openVideo('https://www.youtube.com/watch?v=APv3bEOtA8I','Kesetimbangan Kimia - Pengantar')">
+            <div class="video-thumb">
+              <div class="thumb-bg" style="background: linear-gradient(135deg,#1e3a8a,#3b82f6)">
+                <i class="fas fa-play-circle"></i>
+              </div>
+            </div>
+            <div class="video-info">
+              <h4>Pengantar Kesetimbangan Kimia</h4>
+              <p>Konsep dasar, reaksi reversibel, dan kesetimbangan dinamis</p>
+              <div class="video-meta"><i class="fab fa-youtube"></i> YouTube · 15:32</div>
+            </div>
+          </div>
+          <div class="video-card" onclick="openVideo('https://www.youtube.com/watch?v=VUbxQe2GFEM','Tetapan Kesetimbangan Kc dan Kp')">
+            <div class="video-thumb">
+              <div class="thumb-bg" style="background: linear-gradient(135deg,#064e3b,#10b981)">
+                <i class="fas fa-play-circle"></i>
+              </div>
+            </div>
+            <div class="video-info">
+              <h4>Tetapan Kesetimbangan Kc & Kp</h4>
+              <p>Cara menghitung Kc, Kp, dan hubungannya</p>
+              <div class="video-meta"><i class="fab fa-youtube"></i> YouTube · 22:15</div>
+            </div>
+          </div>
+          <div class="video-card" onclick="openVideo('https://www.youtube.com/results?search_query=asas+le+chatelier+kimia+SMA','Asas Le Chatelier')">
+            <div class="video-thumb">
+              <div class="thumb-bg" style="background: linear-gradient(135deg,#7c2d12,#f97316)">
+                <i class="fas fa-play-circle"></i>
+              </div>
+            </div>
+            <div class="video-info">
+              <h4>Asas Le Chatelier</h4>
+              <p>Pergeseran kesetimbangan akibat gangguan luar</p>
+              <div class="video-meta"><i class="fab fa-youtube"></i> YouTube · 18:40</div>
+            </div>
+          </div>
+          <div class="video-card" onclick="openVideo('https://www.youtube.com/results?search_query=proses+haber+bosch+kimia','Proses Industri Kimia')">
+            <div class="video-thumb">
+              <div class="thumb-bg" style="background: linear-gradient(135deg,#4c1d95,#8b5cf6)">
+                <i class="fas fa-play-circle"></i>
+              </div>
+            </div>
+            <div class="video-info">
+              <h4>Kesetimbangan dalam Industri</h4>
+              <p>Proses Haber-Bosch dan proses Kontak</p>
+              <div class="video-meta"><i class="fab fa-youtube"></i> YouTube · 25:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ilustrasi Reaksi -->
+        <div class="section-header mt-3">
+          <h2><i class="fas fa-atom"></i> Ilustrasi Reaksi</h2>
+        </div>
+        <div class="ilustrasi-grid">
+          <div class="ilustrasi-card">
+            <div class="reaksi-anim" id="reaksiAnim1">
+              <div class="molekul-container">
+                <div class="mol mol-reaktan">N₂</div>
+                <div class="mol mol-plus">+</div>
+                <div class="mol mol-reaktan">3H₂</div>
+                <div class="mol mol-arrow anim-arrow">⇌</div>
+                <div class="mol mol-produk">2NH₃</div>
+              </div>
+            </div>
+            <h4>Sintesis Amonia (Haber-Bosch)</h4>
+            <p>N₂(g) + 3H₂(g) ⇌ 2NH₃(g) – Reaksi Eksoterm</p>
+          </div>
+          <div class="ilustrasi-card">
+            <div class="reaksi-anim">
+              <div class="molekul-container">
+                <div class="mol mol-reaktan">2SO₂</div>
+                <div class="mol mol-plus">+</div>
+                <div class="mol mol-reaktan">O₂</div>
+                <div class="mol mol-arrow anim-arrow">⇌</div>
+                <div class="mol mol-produk">2SO₃</div>
+              </div>
+            </div>
+            <h4>Proses Kontak</h4>
+            <p>2SO₂(g) + O₂(g) ⇌ 2SO₃(g) – Pembuatan H₂SO₄</p>
+          </div>
+          <div class="ilustrasi-card">
+            <div class="reaksi-anim">
+              <div class="molekul-container">
+                <div class="mol mol-reaktan" style="color:#ef4444">N₂O₄</div>
+                <div class="mol mol-arrow anim-arrow">⇌</div>
+                <div class="mol mol-produk" style="color:#f97316">2NO₂</div>
+              </div>
+            </div>
+            <h4>Disosiasi N₂O₄</h4>
+            <p>N₂O₄(g) ⇌ 2NO₂(g) – Gas coklat kemerahan</p>
+          </div>
+        </div>
+
+        <!-- Video Modal -->
+        <div class="modal-overlay" id="videoModal">
+          <div class="modal-box modal-wide">
+            <div class="modal-header">
+              <h3 id="videoTitle">Video Pembelajaran</h3>
+              <button onclick="closeModal('videoModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+              <p>Klik tombol di bawah untuk membuka video di YouTube:</p>
+              <a id="videoLink" href="#" target="_blank" class="yt-open-btn">
+                <i class="fab fa-youtube"></i> Buka di YouTube
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: VIRTUAL LAB ===== -->
+      <div class="page-content hidden" id="page-virtualLab">
+        <div class="section-header">
+          <h2><i class="fas fa-flask"></i> Virtual Lab & Simulasi</h2>
+          <p>Simulasi Interaktif Kesetimbangan Kimia</p>
+        </div>
+
+        <div class="lab-tabs">
+          <button class="lab-tab active" onclick="switchLabTab('pergeseran')">Pergeseran Kesetimbangan</button>
+          <button class="lab-tab" onclick="switchLabTab('suhu')">Pengaruh Suhu</button>
+          <button class="lab-tab" onclick="switchLabTab('konsentrasi')">Pengaruh Konsentrasi</button>
+          <button class="lab-tab" onclick="switchLabTab('tekanan')">Pengaruh Tekanan</button>
+        </div>
+
+        <!-- Simulasi Pergeseran Kesetimbangan -->
+        <div class="lab-panel active" id="lab-pergeseran">
+          <div class="sim-container">
+            <div class="sim-info">
+              <h3>Simulasi: N₂O₄(g) ⇌ 2NO₂(g)</h3>
+              <p>N₂O₄ tidak berwarna, NO₂ berwarna coklat kemerahan. Geser slider untuk melihat pergeseran!</p>
+              <div class="sim-controls">
+                <label>Tambah N₂O₄ (Reaktan):</label>
+                <input type="range" id="sliderN2O4" min="0" max="100" value="50" oninput="updateSim('pergeseran')"/>
+                <span id="valN2O4">50</span>
+                <label>Tambah NO₂ (Produk):</label>
+                <input type="range" id="sliderNO2" min="0" max="100" value="50" oninput="updateSim('pergeseran')"/>
+                <span id="valNO2">50</span>
+              </div>
+              <div class="sim-result" id="simResult">
+                Sistem dalam kesetimbangan ⚖️
+              </div>
+            </div>
+            <div class="sim-visual">
+              <div class="beaker-container">
+                <div class="beaker" id="beakerPergeseran">
+                  <div class="liquid" id="liquidPergeseran">
+                    <div class="bubbles">
+                      <div class="bubble"></div>
+                      <div class="bubble"></div>
+                      <div class="bubble"></div>
+                    </div>
+                  </div>
+                  <div class="beaker-label">Larutan</div>
+                </div>
+                <div class="color-scale">
+                  <div class="scale-label">Tidak Berwarna</div>
+                  <div class="scale-bar" id="colorScaleBar"></div>
+                  <div class="scale-label">Coklat Gelap</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulasi Pengaruh Suhu -->
+        <div class="lab-panel hidden" id="lab-suhu">
+          <div class="sim-container">
+            <div class="sim-info">
+              <h3>Pengaruh Suhu terhadap Kesetimbangan</h3>
+              <p>Reaksi: N₂ + 3H₂ ⇌ 2NH₃  ΔH = -92 kJ/mol (Eksoterm)</p>
+              <div class="sim-controls">
+                <label>🌡️ Suhu (°C):</label>
+                <input type="range" id="sliderSuhu" min="100" max="600" value="400" oninput="updateSimSuhu()"/>
+                <span id="valSuhu">400°C</span>
+              </div>
+              <div class="suhu-info" id="suhuInfo">
+                <div class="info-box">
+                  <strong>Suhu Optimal: ~400-500°C</strong>
+                  <p>Keseimbangan antara kecepatan dan yield</p>
+                </div>
+              </div>
+              <div class="sim-result" id="simResultSuhu">Laju reaksi dan kesetimbangan optimal</div>
+            </div>
+            <div class="sim-visual">
+              <div class="thermo-visual">
+                <div class="termometer">
+                  <div class="thermo-tube">
+                    <div class="thermo-mercury" id="thermoMercury"></div>
+                  </div>
+                  <div class="thermo-label" id="thermoLabel">400°C</div>
+                </div>
+                <div class="equilibrium-bars">
+                  <div class="eq-bar-group">
+                    <div class="eq-label">NH₃ (Produk)</div>
+                    <div class="eq-bar-bg"><div class="eq-bar blue" id="barNH3" style="height:60%"></div></div>
+                  </div>
+                  <div class="eq-bar-group">
+                    <div class="eq-label">N₂+H₂ (Reaktan)</div>
+                    <div class="eq-bar-bg"><div class="eq-bar orange" id="barReaktan" style="height:40%"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulasi Pengaruh Konsentrasi -->
+        <div class="lab-panel hidden" id="lab-konsentrasi">
+          <div class="sim-container">
+            <div class="sim-info">
+              <h3>Pengaruh Konsentrasi</h3>
+              <p>Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺ (merah darah)</p>
+              <div class="sim-controls">
+                <label>🧪 Konsentrasi Fe³⁺ (M):</label>
+                <input type="range" id="sliderFe" min="1" max="10" value="5" oninput="updateSimKonsentrasi()"/>
+                <span id="valFe">0.5 M</span>
+                <label>🧪 Konsentrasi SCN⁻ (M):</label>
+                <input type="range" id="sliderSCN" min="1" max="10" value="5" oninput="updateSimKonsentrasi()"/>
+                <span id="valSCN">0.5 M</span>
+              </div>
+              <div class="sim-result" id="simResultKonsentrasi">Kesetimbangan normal – warna merah sedang</div>
+            </div>
+            <div class="sim-visual">
+              <div class="tabung-visual">
+                <div class="tabung" id="tabungKonsentrasi">
+                  <div class="cairan-warna" id="cairanFeSCN"></div>
+                </div>
+                <div class="color-label" id="colorLabel">Merah Sedang</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulasi Pengaruh Tekanan -->
+        <div class="lab-panel hidden" id="lab-tekanan">
+          <div class="sim-container">
+            <div class="sim-info">
+              <h3>Pengaruh Tekanan & Volume</h3>
+              <p>N₂(g) + 3H₂(g) ⇌ 2NH₃(g)  |  Mol reaktan: 4, Mol produk: 2</p>
+              <div class="sim-controls">
+                <label>🏋️ Tekanan (atm):</label>
+                <input type="range" id="sliderTekanan" min="1" max="300" value="150" oninput="updateSimTekanan()"/>
+                <span id="valTekanan">150 atm</span>
+              </div>
+              <div class="sim-result" id="simResultTekanan">Tekanan sedang – kesetimbangan bergeser ke produk</div>
+            </div>
+            <div class="sim-visual">
+              <div class="piston-visual">
+                <div class="cylinder">
+                  <div class="piston" id="pistonEl"></div>
+                  <div class="gas-area" id="gasArea">
+                    <span class="gas-mol">N₂</span>
+                    <span class="gas-mol">H₂</span>
+                    <span class="gas-mol">H₂</span>
+                    <span class="gas-mol green-gas">NH₃</span>
+                    <span class="gas-mol green-gas">NH₃</span>
+                  </div>
+                </div>
+                <div class="pressure-gauge">
+                  <div class="gauge-label" id="gaugeLabel">150 atm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: TUGAS & LKPD ===== -->
+      <div class="page-content hidden" id="page-tugasLKPD">
+        <div class="section-header">
+          <h2><i class="fas fa-tasks"></i> Tugas & LKPD</h2>
+          <p>Lembar Kerja Peserta Didik – Kesetimbangan Kimia</p>
+        </div>
+
+        <div class="tugas-list">
+          <!-- Tugas 1 -->
+          <div class="tugas-card">
+            <div class="tugas-header">
+              <div>
+                <h3>LKPD 1 – Analisis Kesetimbangan N₂O₄ ⇌ 2NO₂</h3>
+                <div class="tugas-meta"><i class="fas fa-clock"></i> Deadline: 20 Mei 2025 | <i class="fas fa-check-circle"></i> <span class="tag done">Dikumpulkan</span></div>
+              </div>
+              <div class="tugas-nilai">Nilai: <strong>88</strong></div>
+            </div>
+          </div>
+
+          <!-- Tugas 2 -->
+          <div class="tugas-card">
+            <div class="tugas-header">
+              <div>
+                <h3>LKPD 2 – Perhitungan Kc dan Kp</h3>
+                <div class="tugas-meta"><i class="fas fa-clock"></i> Deadline: 25 Mei 2025 | <span class="tag done">Dikumpulkan</span></div>
+              </div>
+              <div class="tugas-nilai">Nilai: <strong>92</strong></div>
+            </div>
+          </div>
+
+          <!-- Tugas Aktif -->
+          <div class="tugas-card active-tugas">
+            <div class="tugas-header">
+              <div>
+                <h3>LKPD 3 – Analisis Asas Le Chatelier pada Industri</h3>
+                <div class="tugas-meta"><i class="fas fa-clock"></i> Deadline: 30 Mei 2025 | <span class="tag pending">Belum Dikumpulkan</span></div>
+              </div>
+            </div>
+            <div class="lkpd-soal">
+              <h4>Pertanyaan Analisis:</h4>
+              <ol>
+                <li>Jelaskan mengapa proses Haber-Bosch menggunakan suhu 400-500°C padahal reaksi bersifat eksoterm!</li>
+                <li>Mengapa tekanan 200 atm digunakan dalam proses Haber-Bosch? Kaitkan dengan Asas Le Chatelier!</li>
+                <li>Apa fungsi katalis Fe dalam proses Haber-Bosch? Apakah katalis mempengaruhi kesetimbangan?</li>
+                <li>Bagaimana cara meningkatkan yield NH₃ tanpa mengubah Kc reaksi?</li>
+              </ol>
+              <textarea id="jawabanLKPD3" rows="8" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+              <div class="upload-section">
+                <label><i class="fas fa-paperclip"></i> Upload File Pendukung (opsional):</label>
+                <input type="file" id="uploadFile" accept=".pdf,.doc,.docx,.jpg,.png"/>
+              </div>
+
+              <button class="submit-btn" onclick="submitTugas()">
+                <i class="fas fa-paper-plane"></i> Kumpulkan Tugas
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: EVALUASI KUIS ===== -->
+      <div class="page-content hidden" id="page-evaluasiKuis">
+        <div class="section-header">
+          <h2><i class="fas fa-star"></i> Evaluasi Kuis</h2>
+          <p>Kuis Kesetimbangan Kimia – Soal HOTS Kelas XII</p>
+        </div>
+
+        <div id="kuisIntro" class="kuis-intro">
+          <div class="kuis-info-card">
+            <div class="kuis-icon">📝</div>
+            <h3>Kuis: Kesetimbangan Kimia</h3>
+            <div class="kuis-detail">
+              <span><i class="fas fa-question-circle"></i> 10 Soal Pilihan Ganda</span>
+              <span><i class="fas fa-clock"></i> Waktu: 30 Menit</span>
+              <span><i class="fas fa-star"></i> Bobot: 30% dari nilai akhir</span>
+            </div>
+            <button class="start-kuis-btn" onclick="startKuis()">
+              <i class="fas fa-play"></i> Mulai Kuis
+            </button>
+          </div>
+        </div>
+
+        <div id="kuisArea" class="kuis-area hidden">
+          <div class="kuis-header">
+            <div class="kuis-timer" id="kuisTimer">⏱ 30:00</div>
+            <div class="kuis-progress-text">Soal <span id="soalKe">1</span> dari 10</div>
+          </div>
+          <div class="kuis-progress-bar">
+            <div class="kuis-bar" id="kuisBar" style="width:10%"></div>
+          </div>
+          <div class="soal-container" id="soalContainer"></div>
+          <div class="kuis-nav">
+            <button class="kuis-btn prev" onclick="prevSoal()" id="btnPrev" disabled>
+              <i class="fas fa-arrow-left"></i> Sebelumnya
+            </button>
+            <button class="kuis-btn next" onclick="nextSoal()" id="btnNext">
+              Berikutnya <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="kuis-btn submit-kuis hidden" onclick="submitKuis()" id="btnSubmit">
+              <i class="fas fa-check"></i> Selesai & Kirim
+            </button>
+          </div>
+        </div>
+
+        <div id="kuisResult" class="kuis-result hidden">
+          <div class="result-card">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <h2>Hasil Kuis</h2>
+            <div class="result-score" id="resultScore">85</div>
+            <div class="result-label">dari 100</div>
+            <div class="result-detail" id="resultDetail"></div>
+            <button class="retake-btn" onclick="retakeKuis()"><i class="fas fa-redo"></i> Ulangi Kuis</button>
+            <button class="pembahasan-btn" onclick="showPembahasan()"><i class="fas fa-book"></i> Lihat Pembahasan</button>
+          </div>
+          <div id="pembahasanArea" class="pembahasan-area hidden"></div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: TANYA AI ===== -->
+      <div class="page-content hidden" id="page-tanyaAI">
+        <div class="section-header">
+          <h2><i class="fas fa-robot"></i> Tanya AI – Asisten Kimia</h2>
+          <p>Tanyakan apapun tentang Kesetimbangan Kimia!</p>
+        </div>
+
+        <div class="ai-chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg bot">
+              <div class="msg-avatar bot-avatar">🤖</div>
+              <div class="msg-bubble">
+                Halo! Saya asisten AI ChemLearn. Saya siap membantu kamu memahami materi <strong>Kesetimbangan Kimia</strong>! Kamu bisa tanya tentang:
+                <ul>
+                  <li>Tetapan Kc dan Kp</li>
+                  <li>Asas Le Chatelier</li>
+                  <li>Derajat Disosiasi</li>
+                  <li>Proses industri kimia</li>
+                  <li>Soal-soal hitungan</li>
+                </ul>
+                Ada yang ingin kamu tanyakan? 😊
+              </div>
+            </div>
+          </div>
+          <div class="quick-questions">
+            <p>Pertanyaan cepat:</p>
+            <div class="quick-btns">
+              <button onclick="quickAsk('Apa itu tetapan Kc?')">Apa itu Kc?</button>
+              <button onclick="quickAsk('Jelaskan asas Le Chatelier!')">Asas Le Chatelier</button>
+              <button onclick="quickAsk('Apa itu derajat disosiasi?')">Derajat Disosiasi</button>
+              <button onclick="quickAsk('Bagaimana proses Haber-Bosch?')">Proses Haber-Bosch</button>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ketik pertanyaanmu di sini..." onkeypress="if(event.key==='Enter')sendChat()"/>
+            <button class="send-btn" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SISWA: PRESENSI DIGITAL ===== -->
+      <div class="page-content hidden" id="page-presensiDigital">
+        <div class="section-header">
+          <h2><i class="fas fa-calendar-check"></i> Presensi Digital</h2>
+          <p>Absensi Online – Kehadiran Kelas Kimia XII</p>
+        </div>
+
+        <div class="presensi-container">
+          <div class="absen-card">
+            <div class="absen-date" id="absenDate"></div>
+            <div class="absen-time" id="absenTime"></div>
+            <div class="absen-status" id="absenStatus">
+              <div class="status-icon">📋</div>
+              <div class="status-text">Belum Absen Hari Ini</div>
+            </div>
+            <button class="absen-btn" id="absenBtn" onclick="doAbsen()">
+              <i class="fas fa-fingerprint"></i> Lakukan Absensi
+            </button>
+          </div>
+
+          <div class="presensi-history">
+            <h3><i class="fas fa-history"></i> Riwayat Kehadiran</h3>
+            <div class="rekap-stat">
+              <div class="rekap-item green"><span class="rekap-num">18</span><span>Hadir</span></div>
+              <div class="rekap-item red"><span class="rekap-num">1</span><span>Sakit</span></div>
+              <div class="rekap-item orange"><span class="rekap-num">1</span><span>Izin</span></div>
+              <div class="rekap-item gray"><span class="rekap-num">0</span><span>Alfa</span></div>
+            </div>
+            <table class="presensi-table">
+              <thead><tr><th>Tanggal</th><th>Jam</th><th>Status</th></tr></thead>
+              <tbody id="presensiBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== GURU: DASHBOARD ===== -->
+      <div class="page-content hidden" id="page-dashboardGuru">
+        <div class="page-hero guru-hero">
+          <div class="hero-text">
+            <div class="hero-greeting">Selamat Datang,</div>
+            <h2 class="hero-name" id="heroTeacherName">Bpk. Andi Wijaya, S.Pd 👨‍🏫</h2>
+            <p>Monitor perkembangan siswa kelas XII – Kesetimbangan Kimia</p>
+          </div>
+          <div class="hero-chem-icon">🏫</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">32</div>
+              <div class="stat-label">Total Siswa</div>
+            </div>
+          </div>
+          <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">82.5</div>
+              <div class="stat-label">Rata-rata Nilai</div>
+            </div>
+          </div>
+          <div class="stat-card stat-orange">
+            <div class="stat-icon"><i class="fas fa-clipboard-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">28/32</div>
+              <div class="stat-label">Tugas Masuk</div>
+            </div>
+          </div>
+          <div class="stat-card stat-purple">
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-number">90%</div>
+              <div class="stat-label">Kehadiran Rata-rata</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guru-dashboard-grid">
+          <!-- Grafik Progress -->
+          <div class="chart-card">
+            <h3><i class="fas fa-chart-bar"></i> Grafik Nilai Kuis Siswa</h3>
+            <div class="bar-chart" id="guruBarChart"></div>
+          </div>
+
+          <!-- Top Siswa -->
+          <div class="toplist-card">
+            <h3><i class="fas fa-trophy"></i> Peringkat Siswa</h3>
+            <div class="top-list" id="topSiswaList"></div>
+          </div>
+
+          <!-- Notifikasi Guru -->
+          <div class="notif-card-guru">
+            <h3><i class="fas fa-bell"></i> Notifikasi</h3>
+            <div class="notif-list">
+              <div class="notif-item"><i class="fas fa-tasks blue"></i> 4 tugas LKPD baru masuk</div>
+              <div class="notif-item"><i class="fas fa-question red"></i> Banyak siswa tanya tentang Le Chatelier</div>
+              <div class="notif-item"><i class="fas fa-flask orange"></i> 8 siswa selesai Virtual Lab</div>
+              <div class="notif-item"><i class="fas fa-clock gray"></i> Kuis berikutnya: 20 Mei 2025</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== GURU: MANAJEMEN KONTEN ===== -->
+      <div class="page-content hidden" id="page-manajemenKonten">
+        <div class="section-header">
+          <h2><i class="fas fa-edit"></i> Manajemen Konten</h2>
+          <p>Kelola Materi, Video, dan Kuis</p>
+        </div>
+
+        <div class="content-tabs">
+          <button class="tab-btn active" onclick="switchContentTab('materi')">📚 Materi</button>
+          <button class="tab-btn" onclick="switchContentTab('video')">🎬 Video</button>
+          <button class="tab-btn" onclick="switchContentTab('kuis')">📝 Kuis/LKPD</button>
+        </div>
+
+        <div id="contentMateri" class="content-section active">
+          <div class="add-btn-row">
+            <button class="add-content-btn" onclick="showAddMateri()"><i class="fas fa-plus"></i> Tambah Materi</button>
+          </div>
+          <table class="content-table">
+            <thead><tr><th>#</th><th>Judul Materi</th><th>Durasi</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="materiTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="contentVideo" class="content-section hidden">
+          <div class="add-btn-row">
+            <button class="add-content-btn" onclick="showAddVideo()"><i class="fas fa-plus"></i> Upload/Tambah Video</button>
+          </div>
+          <div class="video-manager-grid" id="videoManagerGrid"></div>
+        </div>
+
+        <div id="contentKuis" class="content-section hidden">
+          <div class="add-btn-row">
+            <button class="add-content-btn"><i class="fas fa-plus"></i> Buat Kuis Baru</button>
+          </div>
+          <table class="content-table">
+            <thead><tr><th>#</th><th>Nama Kuis/LKPD</th><th>Soal</th><th>Deadline</th><th>Aksi</th></tr></thead>
+            <tbody id="kuisTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Add Materi Modal -->
+        <div class="modal-overlay" id="addMateriModal">
+          <div class="modal-box">
+            <div class="modal-header">
+              <h3>Tambah Materi Baru</h3>
+              <button onclick="closeModal('addMateriModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group"><label>Judul Materi</label><input type="text" placeholder="Judul..."/></div>
+              <div class="form-group"><label>Konten</label><textarea rows="5" placeholder="Isi materi..."></textarea></div>
+              <div class="form-group"><label>Upload File</label><input type="file"/></div>
+              <button class="submit-btn" onclick="closeModal('addMateriModal')"><i class="fas fa-save"></i> Simpan</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Video Modal -->
+        <div class="modal-overlay" id="addVideoModal">
+          <div class="modal-box">
+            <div class="modal-header">
+              <h3>Tambah Video Pembelajaran</h3>
+              <button onclick="closeModal('addVideoModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group"><label>Judul Video</label><input type="text" placeholder="Judul video..."/></div>
+              <div class="form-group"><label>Link YouTube</label><input type="url" placeholder="https://youtube.com/..."/></div>
+              <div class="form-group"><label>Deskripsi</label><textarea rows="3" placeholder="Deskripsi singkat..."></textarea></div>
+              <button class="submit-btn" onclick="closeModal('addVideoModal')"><i class="fas fa-save"></i> Simpan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== GURU: KUNCI JAWABAN ===== -->
+      <div class="page-content hidden" id="page-kunciJawaban">
+        <div class="section-header">
+          <h2><i class="fas fa-key"></i> Kunci Jawaban & Pembahasan</h2>
+          <p>Database jawaban – tidak dapat diakses siswa sebelum evaluasi selesai</p>
+        </div>
+
+        <div class="kunci-container">
+          <div class="kunci-warning"><i class="fas fa-lock"></i> Area Rahasia – Hanya untuk Guru/Admin</div>
+          <div class="kunci-list" id="kunciList"></div>
+        </div>
+      </div>
+
+      <!-- ===== GURU: SPREADSHEET NILAI ===== -->
+      <div class="page-content hidden" id="page-spreadsheetNilai">
+        <div class="section-header">
+          <h2><i class="fas fa-table"></i> Spreadsheet Nilai</h2>
+          <p>Rekap otomatis nilai kuis dan LKPD seluruh siswa</p>
+        </div>
+        <div class="export-row">
+          <button class="export-btn" onclick="exportExcel()"><i class="fas fa-file-excel"></i> Export Excel</button>
+          <button class="export-btn pdf" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> Cetak PDF</button>
+        </div>
+        <div class="spreadsheet-wrapper">
+          <table class="nilai-table" id="nilaiTable">
+            <thead><tr><th>No</th><th>Nama Siswa</th><th>Kuis 1</th><th>Kuis 2</th><th>LKPD 1</th><th>LKPD 2</th><th>LKPD 3</th><th>Rata-rata</th><th>Predikat</th></tr></thead>
+            <tbody id="nilaiTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== GURU: LAPORAN PRESENSI ===== -->
+      <div class="page-content hidden" id="page-laporanPresensi">
+        <div class="section-header">
+          <h2><i class="fas fa-clipboard-list"></i> Laporan Presensi</h2>
+          <p>Rekap kehadiran seluruh siswa kelas XII</p>
+        </div>
+        <div class="presensi-stats-guru">
+          <div class="ps-card green"><i class="fas fa-check-circle"></i><span id="totalHadir">576</span><label>Total Hadir</label></div>
+          <div class="ps-card red"><i class="fas fa-times-circle"></i><span id="totalAlfa">8</span><label>Total Alfa</label></div>
+          <div class="ps-card orange"><i class="fas fa-exclamation-circle"></i><span id="totalIzin">16</span><label>Izin/Sakit</label></div>
+        </div>
+        <table class="presensi-guru-table" id="presensiGuruTable">
+          <thead><tr><th>No</th><th>Nama Siswa</th><th>Hadir</th><th>Sakit</th><th>Izin</th><th>Alfa</th><th>%</th></tr></thead>
+          <tbody id="presensiGuruBody"></tbody>
+        </table>
+      </div>
+
+      <!-- ===== GURU: CONTROL ROOM ===== -->
+      <div class="page-content hidden" id="page-controlRoom">
+        <div class="section-header">
+          <h2><i class="fas fa-sliders-h"></i> Control Room Virtual Lab</h2>
+          <p>Monitoring dan pengaturan simulasi siswa</p>
+        </div>
+        <div class="control-room-grid">
+          <div class="cr-card">
+            <h3><i class="fas fa-eye"></i> Aktivitas Simulasi Saat Ini</h3>
+            <div class="activity-monitor" id="activityMonitor"></div>
+          </div>
+          <div class="cr-card">
+            <h3><i class="fas fa-cog"></i> Parameter Simulasi Global</h3>
+            <div class="param-controls">
+              <div class="param-item">
+                <label>Batas Waktu Simulasi (menit):</label>
+                <input type="number" value="30" min="5" max="120"/>
+              </div>
+              <div class="param-item">
+                <label>Mode Penilaian Otomatis:</label>
+                <select><option>Aktif</option><option>Nonaktif</option></select>
+              </div>
+              <div class="param-item">
+                <label>Tampilkan Hint ke Siswa:</label>
+                <select><option>Ya</option><option>Tidak</option></select>
+              </div>
+              <button class="submit-btn"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== GURU: ANALISIS AI ===== -->
+      <div class="page-content hidden" id="page-analisisAI">
+        <div class="section-header">
+          <h2><i class="fas fa-brain"></i> Analisis Tanya AI</h2>
+          <p>Pertanyaan paling sering ditanyakan siswa – identifikasi materi sulit</p>
+        </div>
+        <div class="ai-analysis-grid">
+          <div class="analysis-card">
+            <h3><i class="fas fa-chart-pie"></i> Topik Paling Sering Ditanyakan</h3>
+            <div class="topic-bars" id="topicBars"></div>
+          </div>
+          <div class="analysis-card">
+            <h3><i class="fas fa-list"></i> Pertanyaan Terbaru Siswa</h3>
+            <div class="question-log" id="questionLog"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end page-wrapper -->
+  </main>
+</div><!-- end mainApp -->
+
+<!-- Toast Notifikasi -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
